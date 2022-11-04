@@ -1,0 +1,27 @@
+server:
+ servlet:
+  context-path: /person
+spring:
+ datasource:
+  url: jdbc:mysql://localhost:3306/pegasus_test_person?createDatabaseIfNotExist=true&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
+  username: root
+  password: my-secret-pw
+  platform: mysql
+ jpa:
+  database-platform: org.hibernate.dialect.MySQL57Dialect
+  hibernate.ddl-auto: update
+ main:
+  allow-bean-definition-overriding: true
+ profiles:
+  active: development
+app:
+ api:
+  basic:
+   username: testUser
+   password: xCMbk5083
+springdoc:
+ api-docs:
+  path: /api-docs
+ swagger-ui:
+  path: /swagger-ui.html
+ version: 3.0
