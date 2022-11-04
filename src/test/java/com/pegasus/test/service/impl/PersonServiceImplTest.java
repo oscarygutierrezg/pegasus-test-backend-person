@@ -47,12 +47,7 @@ public class PersonServiceImplTest {
 		Mockito.when(personRepository.save(Mockito.any(Person.class))).thenAnswer(p -> creatModel((Person) p.getArguments()[0]));
 		Mockito.when(personMapper.toDto(Mockito.any(Person.class))).thenAnswer(p -> toDto((Person) p.getArguments()[0]));
 		Mockito.when(personMapper.toModel(Mockito.any(PersonRequest.class))).thenAnswer(p -> toModel((PersonRequest) p.getArguments()[0]));
-		PersonRequest personRequest = new PersonRequest();
-		personRequest.setAddress(faker.address().fullAddress());
-		personRequest.setDocNumber(faker.idNumber().valid());
-		personRequest.setLastName(faker.name().lastName());
-		personRequest.setName(faker.name().firstName());
-		personRequest.setPhone(faker.phoneNumber().cellPhone());
+		PersonRequest personRequest = createPersonRequest();
 		PersonDto personDto = personServiceImpl.create(personRequest);
 		
 		Assertions.assertNotNull(personDto);
@@ -72,12 +67,7 @@ public class PersonServiceImplTest {
 		Mockito.doNothing().when(personMapper).updateModel(
 				Mockito.any(PersonRequest.class),
 				Mockito.any(Person.class));
-		PersonRequest personRequest = new PersonRequest();
-		personRequest.setAddress(faker.address().fullAddress());
-		personRequest.setDocNumber(faker.idNumber().valid());
-		personRequest.setLastName(faker.name().lastName());
-		personRequest.setName(faker.name().firstName());
-		personRequest.setPhone(faker.phoneNumber().cellPhone());
+		PersonRequest personRequest = createPersonRequest();
 		PersonDto personDto = personServiceImpl.update(UUID.randomUUID(), personRequest);
 		
 		Assertions.assertNotNull(personDto);
@@ -183,11 +173,13 @@ public class PersonServiceImplTest {
 	}
 
 
-	private void updateModel(PersonRequest personDto, Person person) {
-		person.setAddress(personDto.getAddress());
-		person.setDocNumber(personDto.getDocNumber());
-		person.setLastName(personDto.getLastName());
-		person.setName(personDto.getName());
-		person.setPhone(personDto.getPhone());
+	private PersonRequest createPersonRequest() {
+		PersonRequest person = new PersonRequest();
+		person.setAddress(faker.address().fullAddress());
+		person.setDocNumber(faker.idNumber().valid());
+		person.setLastName(faker.name().lastName());
+		person.setName(faker.name().firstName());
+		person.setPhone(faker.phoneNumber().cellPhone());
+		return person;
 	}
 }
