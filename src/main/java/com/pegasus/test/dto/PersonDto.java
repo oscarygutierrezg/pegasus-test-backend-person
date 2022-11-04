@@ -2,6 +2,20 @@ package com.pegasus.test.dto;
 
 import java.util.UUID;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PersonDto {
 	
 	private UUID id;
@@ -10,43 +24,4 @@ public class PersonDto {
 	protected String docNumber;
 	protected String address;
 	protected String phone;
-	
-	
-	public UUID getId() {
-		return id;
-	}
-	public void setId(UUID id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-	public String getDocNumber() {
-		return docNumber;
-	}
-	public void setDocNumber(String docNumber) {
-		this.docNumber = docNumber;
-	}
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	public String getPhone() {
-		return phone;
-	}
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	
 }

@@ -18,12 +18,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.javafaker.Faker;
 import com.pegasus.test.PersonApplication;
 import com.pegasus.test.dto.PersonDto;
 import com.pegasus.test.dto.PersonRequest;
 import com.pegasus.test.model.Person;
 import com.pegasus.test.repository.PersonRepository;
+import com.pegasus.test.util.PersonUtil;
 
 
 @SpringBootTest
@@ -43,11 +43,11 @@ public class PersonControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	private Faker faker = new Faker();
+	private PersonUtil personUtil = new PersonUtil();
 	
 	@Test
 	public void test_Create_Should_CreatedPerson_When_Invoked() throws JsonProcessingException, Exception {
-		PersonRequest personRequest = createPersonRequest();
+		PersonRequest personRequest = personUtil.createPersonRequest();
 		
 		ResultActions res =    mockMvc.perform(
 	            MockMvcRequestBuilders.post("/v1/person")
@@ -81,7 +81,7 @@ public class PersonControllerTest {
 	public void test_Update_Should_Updateerson_When_Invoked() throws JsonProcessingException, Exception {
 		Person person = new Person();
 		personRepository.save(person);
-		PersonRequest personRequest = createPersonRequest();
+		PersonRequest personRequest = personUtil.createPersonRequest();
 		
 		ResultActions res =    mockMvc.perform(
 	            MockMvcRequestBuilders.put("/v1/person/"+person.getId())
@@ -113,7 +113,8 @@ public class PersonControllerTest {
 	
 	@Test
 	public void test_Show_Should_ShowPerson_When_Invoked() throws JsonProcessingException, Exception {
-		Person person = createPerson();
+		Person person = personUtil.createPerson();
+		person.setId(null);
 		personRepository.save(person);
 		
 		
@@ -141,10 +142,10 @@ public class PersonControllerTest {
 	
 	@Test
 	public void test_Index_Should_ShowPagePerson_When_Invoked() throws JsonProcessingException, Exception {
-		personRepository.save(createPerson());
-		personRepository.save(createPerson());
-		personRepository.save(createPerson());
-		personRepository.save(createPerson());
+		personRepository.save(personUtil.createPerson());
+		personRepository.save(personUtil.createPerson());
+		personRepository.save(personUtil.createPerson());
+		personRepository.save(personUtil.createPerson());
 		
 		mockMvc.perform(
 	            MockMvcRequestBuilders.get("/v1/person")
@@ -166,7 +167,8 @@ public class PersonControllerTest {
 	
 	@Test
 	public void test_Delete_Should_DeletePerson_When_Invoked() throws JsonProcessingException, Exception {
-		Person person = createPerson();
+		Person person = personUtil.createPerson();
+		person.setId(null);
 		personRepository.save(person);
 		
 		mockMvc.perform(
@@ -182,23 +184,6 @@ public class PersonControllerTest {
 	            );
 	}
 	
-	private Person createPerson() {
-		Person person = new Person();
-		person.setAddress(faker.address().fullAddress());
-		person.setDocNumber(faker.idNumber().valid());
-		person.setLastName(faker.name().lastName());
-		person.setName(faker.name().firstName());
-		person.setPhone(faker.phoneNumber().cellPhone());
-		return person;
-	}
-	
-	private PersonRequest createPersonRequest() {
-		PersonRequest person = new PersonRequest();
-		person.setAddress(faker.address().fullAddress());
-		person.setDocNumber(faker.idNumber().valid());
-		person.setLastName(faker.name().lastName());
-		person.setName(faker.name().firstName());
-		person.setPhone(faker.phoneNumber().cellPhone());
-		return person;
-	}
 }
+
+
