@@ -31,35 +31,30 @@ import com.pegasus.test.repository.PersonRepository;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = PersonApplication.class)
-
 public class PersonControllerTest {
 
+	private static final String AUTHORIZATION = "Authorization";
+	private static final String BASIC = "Basic dGVzdFVzZXI6eENNYms1MDgz";
+
 	@Autowired
-	private MockMvc mockMvc;
-	
-	private Faker faker = new Faker();
-	
-	
+	private MockMvc mockMvc;	
 	@Autowired
 	private PersonRepository personRepository;
 	@Autowired
 	private ObjectMapper objectMapper;
 	
+	private Faker faker = new Faker();
+	
 	@Test
 	public void test_Create_Should_CreatedPerson_When_Invoked() throws JsonProcessingException, Exception {
-		PersonRequest personRequest = new PersonRequest();
-		personRequest.setAddress(faker.address().fullAddress());
-		personRequest.setDocNumber(faker.idNumber().valid());
-		personRequest.setLastName(faker.name().lastName());
-		personRequest.setName(faker.name().firstName());
-		personRequest.setPhone(faker.phoneNumber().cellPhone());
+		PersonRequest personRequest = createPersonRequest();
 		
 		ResultActions res =    mockMvc.perform(
 	            MockMvcRequestBuilders.post("/v1/person")
 	                .contentType(MediaType.APPLICATION_JSON)
 	                .content(objectMapper.writeValueAsString(personRequest))
 	                .accept(MediaType.APPLICATION_JSON)
-	                .header("Authorization", "Basic dGVzdFVzZXI6eENNYms1MDgz")
+	                .header(AUTHORIZATION, BASIC)
 	        )
 	            .andDo(MockMvcResultHandlers.print())
 	            .andExpectAll(
@@ -84,23 +79,16 @@ public class PersonControllerTest {
 	
 	@Test
 	public void test_Update_Should_Updateerson_When_Invoked() throws JsonProcessingException, Exception {
-		
 		Person person = new Person();
 		personRepository.save(person);
-		
-		PersonRequest personRequest = new PersonRequest();
-		personRequest.setAddress(faker.address().fullAddress());
-		personRequest.setDocNumber(faker.idNumber().valid());
-		personRequest.setLastName(faker.name().lastName());
-		personRequest.setName(faker.name().firstName());
-		personRequest.setPhone(faker.phoneNumber().cellPhone());
+		PersonRequest personRequest = createPersonRequest();
 		
 		ResultActions res =    mockMvc.perform(
 	            MockMvcRequestBuilders.put("/v1/person/"+person.getId())
 	                .contentType(MediaType.APPLICATION_JSON)
 	                .content(objectMapper.writeValueAsString(personRequest))
 	                .accept(MediaType.APPLICATION_JSON)
-	                .header("Authorization", "Basic dGVzdFVzZXI6eENNYms1MDgz")
+	                .header(AUTHORIZATION, BASIC)
 	        )
 	            .andDo(MockMvcResultHandlers.print())
 	            .andExpectAll(
@@ -123,16 +111,9 @@ public class PersonControllerTest {
 		
 	}
 	
-	
 	@Test
 	public void test_Show_Should_ShowPerson_When_Invoked() throws JsonProcessingException, Exception {
-		Person person = new Person();
-		person.setAddress(faker.address().fullAddress());
-		person.setDocNumber(faker.idNumber().valid());
-		person.setLastName(faker.name().lastName());
-		person.setName(faker.name().firstName());
-		person.setPhone(faker.phoneNumber().cellPhone());
-		
+		Person person = createPerson();
 		personRepository.save(person);
 		
 		
@@ -141,7 +122,7 @@ public class PersonControllerTest {
 	            MockMvcRequestBuilders.get("/v1/person/"+person.getId())
 	                .contentType(MediaType.APPLICATION_JSON)
 	                .accept(MediaType.APPLICATION_JSON)
-	                .header("Authorization", "Basic dGVzdFVzZXI6eENNYms1MDgz")
+	                .header(AUTHORIZATION, BASIC)
 	        )
 	            .andDo(MockMvcResultHandlers.print())
 	            .andExpectAll(
@@ -158,23 +139,18 @@ public class PersonControllerTest {
 		personRepository.deleteById(personDto.getId());
 	}
 	
-	
-	
 	@Test
 	public void test_Index_Should_ShowPagePerson_When_Invoked() throws JsonProcessingException, Exception {
-
 		personRepository.save(createPerson());
 		personRepository.save(createPerson());
 		personRepository.save(createPerson());
 		personRepository.save(createPerson());
-		
-		
 		
 		mockMvc.perform(
 	            MockMvcRequestBuilders.get("/v1/person")
 	                .contentType(MediaType.APPLICATION_JSON)
 	                .accept(MediaType.APPLICATION_JSON)
-	                .header("Authorization", "Basic dGVzdFVzZXI6eENNYms1MDgz")
+	                .header(AUTHORIZATION, BASIC)
 	        )
 	            .andDo(MockMvcResultHandlers.print())
 	            .andExpectAll(
@@ -190,22 +166,14 @@ public class PersonControllerTest {
 	
 	@Test
 	public void test_Delete_Should_DeletePerson_When_Invoked() throws JsonProcessingException, Exception {
-		Person person = new Person();
-		person.setAddress(faker.address().fullAddress());
-		person.setDocNumber(faker.idNumber().valid());
-		person.setLastName(faker.name().lastName());
-		person.setName(faker.name().firstName());
-		person.setPhone(faker.phoneNumber().cellPhone());
-		
+		Person person = createPerson();
 		personRepository.save(person);
-		
-		
 		
 		mockMvc.perform(
 	            MockMvcRequestBuilders.delete("/v1/person/"+person.getId())
 	                .contentType(MediaType.APPLICATION_JSON)
 	                .accept(MediaType.APPLICATION_JSON)
-	                .header("Authorization", "Basic dGVzdFVzZXI6eENNYms1MDgz")
+	                .header(AUTHORIZATION, BASIC)
 	        )
 	            .andDo(MockMvcResultHandlers.print())
 	            .andExpectAll(
@@ -223,9 +191,14 @@ public class PersonControllerTest {
 		person.setPhone(faker.phoneNumber().cellPhone());
 		return person;
 	}
-
-
 	
-
-
+	private PersonRequest createPersonRequest() {
+		PersonRequest person = new PersonRequest();
+		person.setAddress(faker.address().fullAddress());
+		person.setDocNumber(faker.idNumber().valid());
+		person.setLastName(faker.name().lastName());
+		person.setName(faker.name().firstName());
+		person.setPhone(faker.phoneNumber().cellPhone());
+		return person;
+	}
 }
